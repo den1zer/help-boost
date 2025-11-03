@@ -11,6 +11,7 @@ exports.registerUser = async (req, res) => {
     if (user) {
       return res.status(400).json({ msg: 'Користувач з таким email вже існує' });
     }
+
     user = new User({
       username,
       email,
@@ -21,9 +22,11 @@ exports.registerUser = async (req, res) => {
     user.password = await bcrypt.hash(password, salt);
 
     await user.save();
+
     const payload = {
       user: {
         id: user.id,
+        role: user.role, 
       },
     };
 
@@ -33,7 +36,7 @@ exports.registerUser = async (req, res) => {
       { expiresIn: '5h' },
       (err, token) => {
         if (err) throw err;
-        res.status(201).json({ token });
+        res.status(201).json({ token, role: user.role }); 
       }
     );
   } catch (err) {
@@ -41,6 +44,7 @@ exports.registerUser = async (req, res) => {
     res.status(500).send('Помилка на сервері');
   }
 };
+
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -58,6 +62,7 @@ exports.loginUser = async (req, res) => {
     const payload = {
       user: {
         id: user.id,
+        role: user.role, 
       },
     };
 
@@ -67,7 +72,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: '5h' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, role: user.role });
       }
     );
   } catch (err) {

@@ -18,11 +18,17 @@ const LoginPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      await authService.login({ email, password });
-      alert('Вхід успішний!');
-      navigate('/pages/DashboardPage.jsx');
+      const { role } = await authService.login({ email, password });
+            alert('Вхід успішний!');
+
+      if (role === 'admin') {
+        navigate('/admin/dashboard'); 
+      } else {
+        navigate('/'); 
+      }
+
     } catch (error) {
-      alert('Помилка входу: ' + error.response.data.msg);
+      alert('Помилка входу: ' + (error.response?.data?.msg || 'Невідома помилка'));
     }
   };
 

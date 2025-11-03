@@ -17,6 +17,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'], 
+    default: 'user'
+  },
   points: {
     type: Number,
     default: 0,
@@ -24,6 +29,11 @@ const UserSchema = new mongoose.Schema({
   level: {
     type: Number,
     default: 1,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'], 
+    default: 'user',        
   },
 }, { timestamps: true }); 
 
