@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import { Navigate } from 'react-router-dom';
 import { FiStar } from 'react-icons/fi';
 
 const DashboardHeader = () => {
@@ -6,15 +8,35 @@ const DashboardHeader = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserData = () => {
-      setTimeout(() => {
-        const fetchedData = {
-          username: "??????",
-          points: 1111,
+    const fetchUserData = async () => {
+      try {
+        const token = JSON.parse(localStorage.getItem('userToken'));
+
+        if (!token) {
+          setIsLoading(false);
+          setUserData({ username: 'Гість', points: 0 }); 
+          return;
+        }
+
+        const config = {
+          headers: {
+            'x-auth-token': token
+          }
         };
-        setUserData(fetchedData);
+        const res = await axios.get('http://localhost:5000/api/users/me', config);
+
+        setUserData({
+          username: res.data.username,
+          points: res.data.points 
+        });
         setIsLoading(false);
-      }, 1000); 
+
+      } catch (err) {
+        console.error(err);
+        setUserData({ username: 'Помилка', points: 0 }); 
+        setIsLoading(false);
+        Navigate('/login');
+      }
     };
 
     fetchUserData();
@@ -22,6 +44,7 @@ const DashboardHeader = () => {
 
   return (
     <header className="dashboard-header">
+      
       <h1>Вітаємо, {userData.username}!</h1>
       
       <div className={`header-points ${isLoading ? '' : 'loading'}`}>

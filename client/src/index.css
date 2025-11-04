@@ -4,42 +4,31 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e0e0e0; 
-  min-height: 100vh;
-  color: #333;
 }
 
-#root {
+.auth-page {
   width: 100%;
   min-height: 100vh;
-}
-
-.App {
-  width: 100%;
-  min-height: 100vh;
-  position: relative; 
-}
-
-.page-center-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%; 
-  min-height: 100vh; 
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .auth-main-container {
-  background-color: #e0e0e0; 
+  background-color: #e0e0e0;
   border-radius: 20px;
-  box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.1), -7px -7px 15px rgba(255, 255, 255, 0.7); 
-  display: flex;
+  box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.1), -7px -7px 15px rgba(255, 255, 255, 0.7);
+  display: flex; 
   width: 900px; 
+  max-width: 100%;
   height: 500px; 
   overflow: hidden;
   position: relative;
 }
 
-.auth-left-panel {
+.auth-left-panel, .auth-right-panel {
   flex: 1; 
   padding: 40px;
   display: flex;
@@ -47,164 +36,68 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: relative;
-  z-index: 2; 
+  box-sizing: border-box;
 }
-
-.auth-left-panel h2 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  font-weight: 700;
-  color: #333;
+.auth-title {
+  font-size: 2.5em; margin-bottom: 20px;
+  font-weight: 700; color: #333;
 }
-
-.social-icons {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
+.social-icons { display: flex; gap: 15px; margin-bottom: 25px; }
+.social-icon { 
+  width: 40px; height: 40px; border-radius: 50%; 
+  background-color: #e0e0e0; 
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08), -4px -4px 8px rgba(255, 255, 255, 0.5); 
+  display: flex; justify-content: center; align-items: center; 
+  font-size: 1.2em; color: #555; cursor: pointer; 
 }
-.social-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08), -4px -4px 8px rgba(255, 255, 255, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2em;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-.social-icon:hover {
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.08), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
-  color: #007bff; 
-}
-.social-icon:active {
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.08), inset -1px -1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.divider {
-  font-size: 0.9em;
-  color: #888;
-  margin-bottom: 25px;
-}
-
-.form-group {
-  width: 100%; 
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-}
-.form-group input {
-  width: 70%; 
-  padding: 15px 20px;
-  border: none;
-  border-radius: 25px;
-  background-color: #e0e0e0;
+.divider { font-size: 0.9em; color: #888; margin-bottom: 25px; }
+.form-group { width: 100%; margin-bottom: 20px; }
+.form-group input { 
+  width: 80%; padding: 15px 20px; border: none; 
+  border-radius: 25px; background-color: #e0e0e0; 
   box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.08), inset -4px -4px 8px rgba(255, 255, 255, 0.5); 
-  font-size: 1em;
-  color: #333;
-  transition: all 0.2s ease-in-out;
+  font-size: 1em; 
 }
-.form-group input::placeholder {
-  color: #aaa;
+.auth-form {
+  width: 100%;
+  display: flex; flex-direction: column; align-items: center;
 }
-.form-group input:focus {
-  outline: none;
-  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05), inset -2px -2px 4px rgba(255, 255, 255, 0.3);
-}
-
-.auth-button {
-  width: 70%;
-  padding: 15px;
-  border: none;
-  border-radius: 25px;
-  background-color: #007bff; 
-  color: white;
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.7);
-  transition: all 0.2s ease-in-out;
-  margin-top: 10px; 
+.auth-button { 
+  width: 70%; padding: 15px; border: none; border-radius: 25px; 
+  background-color: #007bff; color: white; font-size: 1.1em; 
+  font-weight: bold; cursor: pointer; 
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.7); 
+  transition: all 0.2s ease-in-out; margin-top: 10px; 
 }
 .auth-button:hover {
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-  background-color: #0069d9; 
+  background-color: #0069d9;
 }
-.auth-button:active {
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1), inset -1px -1px 2px rgba(255, 255, 255, 0.7);
-}
-
-.forgot-password-link {
-  font-size: 0.9em;
-  color: #888;
-  text-decoration: none;
-  margin-top: 15px;
-  transition: color 0.2s ease-in-out;
-}
-.forgot-password-link:hover {
-  color: #007bff;
+.forgot-password-link { 
+  font-size: 0.9em; color: #888; text-decoration: none; margin-top: 15px; 
 }
 
 .auth-right-panel {
-  flex: 1; 
   background-color: #007bff; 
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  border-radius: 20px; 
   color: white; 
   box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), inset -5px -5px 10px rgba(255, 255, 255, 0.2); 
-  position: relative;
-  z-index: 1;
 }
-
-.auth-right-panel h2 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
+.auth-right-panel h2 { color: white; }
 .auth-right-panel p {
-  font-size: 1.1em;
-  line-height: 1.5;
-  max-width: 80%;
-  margin-bottom: 30px;
+  font-size: 1.1em; line-height: 1.5; max-width: 80%; margin-bottom: 30px;
 }
-
 .auth-right-panel .auth-button {
-  background-color: #e0e0e0; 
-  color: #007bff; 
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.7);
+  background-color: #e0e0e0; color: #007bff;
 }
-.auth-right-panel .auth-button:hover {
-  background-color: #d0d0d0;
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-}
-
 .circle-decoration {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.1);
+  position: absolute; background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.2);
   z-index: -1;
 }
-
 .circle-decoration.top-right {
-  width: 150px;
-  height: 150px;
-  top: -75px;
-  right: -75px;
+  width: 150px; height: 150px; top: -75px; right: -75px;
 }
-
 .circle-decoration.bottom-left {
-  width: 200px;
-  height: 200px;
-  bottom: -100px;
-  left: -100px;
+  width: 200px; height: 200px; bottom: -100px; left: -100px;
 }
