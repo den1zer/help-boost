@@ -27,7 +27,7 @@ const MapPicker = ({ onLocationSelect, closeModal }) => {
     <div className="map-modal-overlay">
       <div className="map-modal-content">
         <div className="map-modal-header">
-          <h3>Оберіть точку на карті</h3>
+          <h3>Оберіть точку на мапі</h3>
           <button onClick={closeModal} className="map-modal-close-btn">✕</button>
         </div>
         <div className="map-container">

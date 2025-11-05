@@ -127,3 +127,186 @@
   background-color: #0069d9;
 }
 .add-help-card .plus-icon { font-size: 2.5em; margin-bottom: 10px; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px; /* Відступ від графіка */
+}
+
+/* Маленька картка */
+.stat-card {
+  padding: 20px 25px;
+  border-radius: 15px;
+  background-color: #e0e0e0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+}
+.stat-card .stat-title {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #777;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+}
+.stat-card .stat-value {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #007bff;
+  margin: 0;
+}
+
+/* Контейнер для графіка */
+.chart-container {
+  height: 350px; /* Висота графіка */
+  padding: 25px;
+  border-radius: 15px;
+  background-color: #e0e0e0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+}
+.chart-container h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* --- СТИЛЬ ДЛЯ СПЛИВАЮЧОГО ВІКНА (TOOLTIP) --- */
+
+/* Робимо батьківський елемент "базою" */
+.header-points {
+  position: relative; /* Це база для позиціонування */
+  cursor: pointer;
+}
+
+/* Сама "спливашка" */
+.points-tooltip {
+  display: none; /* Сховано за замовчуванням */
+  position: absolute;
+  top: 100%; /* З'являється чітко під кнопкою */
+  right: 0;
+  margin-top: 10px; /* Маленький відступ */
+  
+  width: 250px; /* Ширина */
+  padding: 20px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  box-shadow: 7px 7px 14px rgba(0, 0, 0, 0.08), 
+              -7px -7px 14px rgba(255, 255, 255, 0.8);
+  z-index: 200;
+  text-align: left;
+}
+
+/* Показуємо "спливашку" при наведенні на .header-points */
+.header-points:hover .points-tooltip {
+  display: block;
+}
+
+/* Стилі для контенту "спливашки" */
+.points-tooltip h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1em;
+}
+.points-tooltip p {
+  margin: 5px 0;
+  font-size: 0.9em;
+  color: #555;
+}
+.points-tooltip strong {
+  color: #007bff;
+}
+
+/* Прогрес-бар (як на сторінці нагород) */
+.progress-bar-container {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), 
+              inset -2px -2px 4px rgba(255, 255, 255, 0.6);
+  border-radius: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 5px;
+  transition: width 0.5s ease;
+}
+/* --- СТИЛІ ДЛЯ АВАТАРА В САЙДБАРІ --- */
+.sidebar-profile .sidebar-icon {
+  /* Робимо іконку профілю круглою */
+  width: 40px;
+  height: 40px;
+  min-width: 40px; /* Перезапис */
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.08), 
+              inset -3px -3px 6px rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Обрізаємо img */
+  font-size: 1.5em; /* Розмір для FiUser */
+  /* Ці відступи потрібні, щоб вирівняти іконку */
+  margin-left: 10px; 
+  margin-right: 10px;
+}
+.sidebar-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Картинка заповнює коло */
+}
+/* --- КІНЕЦЬ СТИЛІВ --- */
+/* ... (всі твої стилі .add-help-card) ... */
+
+/* --- СТИЛІ ДЛЯ РЕЙТИНГУ (НОВІ) --- */
+.leaderboard-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* Робимо скрол, якщо 10 юзерів не влазять */
+  max-height: 300px; 
+  overflow-y: auto;
+}
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+.leaderboard-rank {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #777;
+  width: 40px;
+  text-align: center;
+}
+.leaderboard-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 15px;
+  object-fit: cover;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
+}
+.leaderboard-user {
+  flex: 1;
+  font-weight: 600;
+  color: #333;
+}
+.leaderboard-points {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #007bff;
+}

@@ -7,9 +7,14 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AddHelpPage from './pages/AddHelpPage'; 
+import MyContributionsPage from './pages/MyContributionsPage';
+import ProfilePage from './pages/ProfilePage';
+import RewardsPage from './pages/RewardsPage';
+import SupportPage from './pages/SupportPage'; 
+import InstructionsPage from './pages/InstructionsPage';
+import FundraisersPage from './pages/FundraisersPage';
 
-const RewardsPage = () => <h1 style={{ padding: '50px' }}>Сторінка нагород</h1>;
-const ProfilePage = () => <h1 style={{ padding: '50px' }}>Сторінка налаштувань профілю</h1>;
+
 const ForgotPasswordPage = () => (
   <div className="auth-page"> 
     <h1 style={{ padding: '50px' }}>Сторінка відновлення паролю</h1>
@@ -32,6 +37,12 @@ function App() {
         <Route path="/rewards" element={<AnimatedPage><RewardsPage /></AnimatedPage>} />
         <Route path="/profile" element={<AnimatedPage><ProfilePage /></AnimatedPage>} />
         <Route path="/forgot-password" element={<AnimatedPage centerPage={true}><ForgotPasswordPage /></AnimatedPage>} />
+        <Route path="/profile" element={<AnimatedPage><ProfilePage /></AnimatedPage>} />
+        <Route path="/my-contributions" element={<AnimatedPage><MyContributionsPage /></AnimatedPage>} />
+        <Route path="/rewards" element={<AnimatedPage><RewardsPage /></AnimatedPage>} />
+        <Route path="/support" element={<AnimatedPage><SupportPage /></AnimatedPage>} />
+        <Route path="/instructions" element={<AnimatedPage><InstructionsPage /></AnimatedPage>} />
+        <Route path="/fundraisers" element={<AnimatedPage><FundraisersPage /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
   );
