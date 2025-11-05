@@ -185,9 +185,9 @@ const AddHelpPage = () => {
                 <div className="form-group">
                   <label>Підтвердження (PDF або Фото)</label>
                   <label htmlFor="proofFile" className={`neumorph-file-input ${file ? 'file-selected' : ''}`}>
-                    <span>{file ? '✅' : '📁'} </span>
-                    {file ? file.name : 'Натисніть, щоб обрати файл'}
-                    <input typef="file" id="proofFile" onChange={onFileChange} accept="image/*, application/pdf" />
+                    <span>📁 </span>
+                  {file ? file.name : 'Натисніть, щоб обрати фото/файли'}
+                  <input type="file" id="proofFile" onChange={onFileChange} />
                   </label>
                 </div>
                 
