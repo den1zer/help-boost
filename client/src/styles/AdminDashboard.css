@@ -1,0 +1,134 @@
+/* client/src/styles/AdminDashboard.css */
+.admin-container {
+  padding: 40px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse; /* "Чисті" лінії */
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.admin-table th {
+  background-color: rgba(0, 0, 0, 0.02);
+  font-size: 0.9em;
+  color: #777;
+  text-transform: uppercase;
+}
+
+.admin-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.admin-table .proof-link {
+  color: #007bff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.admin-table .proof-link:hover {
+  text-decoration: underline;
+}
+
+/* Кнопки дій */
+.action-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: opacity 0.2s ease;
+}
+.action-btn:hover {
+  opacity: 0.8;
+}
+
+.action-btn.approve {
+  background-color: #28a745; /* Зелений */
+}
+.action-btn.reject {
+  background-color: #dc3545; /* Червоний */
+}
+
+/* ... (всі стилі .admin-table, .action-btn) ... */
+
+/* --- СТИЛІ ДЛЯ ТАБІВ --- */
+.admin-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+.tab-btn {
+  padding: 15px 25px;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #777;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+.tab-btn:hover {
+  color: #333;
+}
+.tab-btn.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+/* Стиль для селекта ролей */
+.admin-table .neumorph-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* --- НОВИЙ "ЧОТКИЙ" ХЕДЕР АДМІНКИ --- */
+.admin-container {
+  padding: 40px;
+  /* Робимо фон сторінки адміна світлим */
+  background-color: #e0e0e0; 
+  min-height: 100vh;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-header h2 {
+  color: #333;
+  margin: 0;
+}
+/* --- КІНЕЦЬ НОВИХ СТИЛІВ --- */
+
+
+/* ... (всі твої старі стилі: .admin-table, .action-btn, .admin-tabs) ... */
+/* ... (всі твої стилі .tab-btn) ... */
+
+/* --- СТИЛІ ДЛЯ ЗІРОЧОК ВІДГУКІВ --- */
+.admin-rating-stars {
+  display: flex;
+  color: #ffc107; /* Жовтий */
+  font-size: 1.2em;
+}
+
+.admin-rating-stars .star-empty {
+  color: #ccc; /* Сірий */
+}

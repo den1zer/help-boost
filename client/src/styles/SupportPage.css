@@ -1,0 +1,84 @@
+/* client/src/styles/SupportPage.css */
+.support-container {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.support-container h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: 600;
+}
+.support-container h3 {
+  color: #333;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+}
+
+/* --- СТИЛІ ДЛЯ ФОРМ ТІКЕТІВ/ВІДГУКІВ --- */
+/* (Використовуємо .add-help-form з іншого файлу) */
+
+/* Рейтинг (Зірочки) */
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.star {
+  font-size: 2.5em;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.star.active,
+.star:hover {
+  color: #ffc107; /* Жовтий */
+}
+
+
+/* --- СТИЛІ ДЛЯ FAQ --- */
+.faq-item {
+  margin-bottom: 15px;
+  border-radius: 15px;
+  background-color: #e0e0e0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+.faq-question {
+  padding: 20px 25px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+}
+.faq-question:hover {
+  color: #007bff;
+}
+.faq-icon {
+  font-size: 1.2em;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+.faq-item.active .faq-icon {
+  transform: rotate(45deg);
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  color: #555;
+  background-color: rgba(0,0,0,0.02); 
+}
+.faq-item.active .faq-answer {
+  max-height: 200px; 
+  padding: 0 25px 20px 25px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}

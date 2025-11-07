@@ -1,0 +1,73 @@
+/* client/src/styles/MyContributions.css */
+.contributions-container {
+  padding: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.contributions-container h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.contribution-card {
+  padding: 25px;
+  border-radius: 15px;
+  background-color: #e0e0e0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.card-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+/* Стилі для статусів */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: white;
+}
+.status-pending {
+  background-color: #ffc107; /* Жовтий */
+  color: #333;
+}
+.status-approved {
+  background-color: #28a745; /* Зелений */
+}
+.status-rejected {
+  background-color: #dc3545; /* Червоний */
+}
+
+.card-body p {
+  color: #555;
+  margin: 10px 0;
+}
+
+/* --- ОСЬ ТУТ "ЧАТ" --- */
+.rejection-comment {
+  background-color: rgba(220, 53, 69, 0.1); /* Червоний фон */
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 15px;
+}
+.rejection-comment strong {
+  color: #dc3545;
+  display: block;
+  margin-bottom: 5px;
+}
+.rejection-comment p {
+  margin: 0;
+  color: #333;
+}
