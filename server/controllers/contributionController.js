@@ -1,9 +1,12 @@
 const Contribution = require('../models/Contribution');
 const User = require('../models/User');
 const Badge = require('../models/Badge');
+const Task = require('../models/Task');
 
+// --- "ЧОТКИЙ" ФІКС: "addContribution" (шарить за 'taskId') ---
 exports.addContribution = async (req, res) => {
-  const { title, description, type, amount, itemList, comment, location } = req.body;
+  // "Витягуємо" "taskId"
+  const { title, description, type, amount, itemList, comment, location, taskId } = req.body;
   const userId = req.user.id; 
 
   if (!req.file) {
@@ -13,25 +16,35 @@ exports.addContribution = async (req, res) => {
 
   try {
     const newContribution = new Contribution({
-      user: userId,
-      title,
-      description: (type === 'donation' || type === 'volunteering' || type === 'other') ? description : null,
-      type,
-      filePath,
+      user: userId, title, description, type, filePath,
       amount: type === 'donation' ? amount : null, 
       itemList: type === 'aid' ? itemList : null, 
       comment: comment,
-      location: (type === 'aid' || type === 'volunteering') ? JSON.parse(location) : null,
+      location: (type === 'aid' || type === 'volunteering') ? (location ? JSON.parse(location) : null) : null,
+      task: taskId || null, // <-- "ЧОТКИЙ" ФІКС: "Лінкаємо" "таску"
       status: 'pending',
     });
     
     await newContribution.save();
-    res.status(201).json({ msg: 'Ваш внесок успішно додано та відправлено на перевірку!' });
+    
+    // "Чотко" "кажемо" "тасці", що "гімно" "виконано" (чекає "апрув")
+ // ... (в addContribution)
+    // "Чотко" "кажемо" "тасці", що "гімно" "виконано" (чекає "апрув")
+    if (taskId) {
+      await Task.findByIdAndUpdate(taskId, {
+        submission: newContribution._id, // "Кидаємо" "лінк" на "пруф"
+        status: 'completed' // <-- "ЧОТКИЙ" ФІКС: "ВБИВАЄМО" "ТАСКУ" З "ПУЛУ"
+      });
+    }
+// ...
+    
+    res.status(201).json({ msg: 'Ваш внесок/звіт успішно додано та відправлено на перевірку!' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Помилка на сервері');
   }
 };
+// --- КІНЕЦЬ ФІКСУ ---
 
 const checkAndAwardBadges = async (user) => {
   const allBadges = await Badge.find(); 

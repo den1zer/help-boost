@@ -1,5 +1,4 @@
-/* client/src/styles/ProfilePage.css */
-/* Використовуємо той самий контейнер, що й 'AddHelpPage' */
+
 .profile-container {
   padding: 40px;
   max-width: 800px;
@@ -7,7 +6,6 @@
   box-sizing: border-box;
 }
 
-/* Форма */
 .profile-form {
   padding: 40px;
   border-radius: 20px;
@@ -24,7 +22,6 @@
   font-weight: 600;
 }
 
-/* --- СТИЛІ АВАТАРА --- */
 .avatar-section {
   display: flex;
   align-items: center;
@@ -37,24 +34,23 @@
   height: 120px;
   border-radius: 50%;
   background-color: #e0e0e0;
-  /* Втиснутий ефект */
+
   box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1), 
               inset -5px -5px 10px rgba(255, 255, 255, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3em; /* Велика іконка '👤' */
+  font-size: 3em; 
   color: #aaa;
-  overflow: hidden; /* Обрізаємо картинку */
+  overflow: hidden;
 }
 
 .avatar-preview img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Щоб аватар заповнював коло */
+  object-fit: cover; 
 }
 
-/* Кнопка "Змінити фото" */
 .avatar-change-btn {
   margin-top: 15px;
   padding: 10px 20px;
@@ -73,24 +69,17 @@
 }
 .avatar-change-btn input[type="file"] {
   display: none;
-}
-/* --- КІНЕЦЬ СТИЛІВ АВАТАРА --- */
-
-
-/* Розділяємо форму на 2 колонки */
-.form-grid {
+}.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
 }
-/* Якщо поле на всю ширину */
 .form-group.full-width {
   grid-column: 1 / -1;
 }
 
-/* Використовуємо ті самі стилі, що й на AddHelpPage */
 .form-group {
-  margin-bottom: 0; /* Вже є 'gap' */
+  margin-bottom: 0; 
 }
 .form-group label {
   display: block;

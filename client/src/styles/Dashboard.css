@@ -132,10 +132,9 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 30px;
-  margin-bottom: 30px; /* Відступ від графіка */
+  margin-bottom: 30px; 
 }
 
-/* Маленька картка */
 .stat-card {
   padding: 20px 25px;
   border-radius: 15px;
@@ -157,9 +156,8 @@
   margin: 0;
 }
 
-/* Контейнер для графіка */
 .chart-container {
-  height: 350px; /* Висота графіка */
+  height: 350px; 
   padding: 25px;
   border-radius: 15px;
   background-color: #e0e0e0;
@@ -171,23 +169,19 @@
   color: #333;
 }
 
-/* --- СТИЛЬ ДЛЯ СПЛИВАЮЧОГО ВІКНА (TOOLTIP) --- */
-
-/* Робимо батьківський елемент "базою" */
 .header-points {
-  position: relative; /* Це база для позиціонування */
+  position: relative; 
   cursor: pointer;
 }
 
-/* Сама "спливашка" */
 .points-tooltip {
-  display: none; /* Сховано за замовчуванням */
+  display: none; 
   position: absolute;
-  top: 100%; /* З'являється чітко під кнопкою */
+  top: 100%; 
   right: 0;
-  margin-top: 10px; /* Маленький відступ */
+  margin-top: 10px; 
   
-  width: 250px; /* Ширина */
+  width: 250px; 
   padding: 20px;
   background-color: #e0e0e0;
   border-radius: 15px;
@@ -197,12 +191,10 @@
   text-align: left;
 }
 
-/* Показуємо "спливашку" при наведенні на .header-points */
 .header-points:hover .points-tooltip {
   display: block;
 }
 
-/* Стилі для контенту "спливашки" */
 .points-tooltip h4 {
   margin: 0 0 15px 0;
   color: #333;
@@ -217,7 +209,6 @@
   color: #007bff;
 }
 
-/* Прогрес-бар (як на сторінці нагород) */
 .progress-bar-container {
   width: 100%;
   height: 10px;
@@ -234,12 +225,10 @@
   border-radius: 5px;
   transition: width 0.5s ease;
 }
-/* --- СТИЛІ ДЛЯ АВАТАРА В САЙДБАРІ --- */
 .sidebar-profile .sidebar-icon {
-  /* Робимо іконку профілю круглою */
   width: 40px;
   height: 40px;
-  min-width: 40px; /* Перезапис */
+  min-width: 40px; 
   border-radius: 50%;
   background-color: #e0e0e0;
   box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.08), 
@@ -247,21 +236,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Обрізаємо img */
-  font-size: 1.5em; /* Розмір для FiUser */
-  /* Ці відступи потрібні, щоб вирівняти іконку */
+  overflow: hidden; 
+  font-size: 1.5em; 
   margin-left: 10px; 
   margin-right: 10px;
 }
 .sidebar-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Картинка заповнює коло */
+  object-fit: cover; 
 }
-/* --- КІНЕЦЬ СТИЛІВ --- */
-/* ... (всі твої стилі .add-help-card) ... */
 
-/* --- СТИЛІ ДЛЯ РЕЙТИНГУ (НОВІ) --- */
 .leaderboard-card h2 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -271,7 +256,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  /* Робимо скрол, якщо 10 юзерів не влазять */
   max-height: 300px; 
   overflow-y: auto;
 }
@@ -309,4 +293,35 @@
   font-size: 1.1em;
   font-weight: 700;
   color: #007bff;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px); 
+}
+
+.modal-content {
+  background-color: #e0e0e0;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.2), 
+              -7px -7px 15px rgba(255, 255, 255, 0.8);
+  width: 90%; max-width: 500px; 
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px; right: 20px;
+  font-size: 1.5em; color: #555;
+  background: none; border: none; cursor: pointer;
+}
+
+.modal-title {
+  margin-top: 0; margin-bottom: 20px;
+  color: #333; text-align: center;
 }

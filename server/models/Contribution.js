@@ -36,6 +36,11 @@ const ContributionSchema = new mongoose.Schema({
     lat: Number,
     lng: Number,
   },
+  task: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task',
+    default: null,
+  },
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
