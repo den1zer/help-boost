@@ -1,4 +1,4 @@
-/* client/src/styles/FundraisersPage.css */
+
 .fundraisers-container {
   padding: 40px;
   max-width: 1000px;
@@ -8,14 +8,12 @@
   color: #333; margin-top: 0; margin-bottom: 30px;
 }
 
-/* "Чотка" сітка зборів */
 .fundraisers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
 
-/* "Чотка" картка збору */
 .fundraiser-card {
   padding: 25px;
   border-radius: 15px;
@@ -29,10 +27,9 @@
   margin: 0 0 10px 0; color: #333;
 }
 .fundraiser-card p {
-  color: #555; flex-grow: 1; /* Опис займає вільне місце */
+  color: #555; flex-grow: 1; 
 }
 
-/* "Чоткий" прогрес-бар */
 .progress-stats {
   display: flex;
   justify-content: space-between;
@@ -58,7 +55,6 @@
   transition: width 0.5s ease;
 }
 
-/* "Чотка" форма заглушки (позичаємо стилі) */
 .fundraiser-form {
   margin-top: 20px;
 }

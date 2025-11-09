@@ -55,11 +55,19 @@ const PendingContributions = () => {
   
   return (
     <table className="admin-table">
-      <thead><tr><th>Користувач</th><th>Тип</th><th>Заголовок</th><th>Підтвердження</th><th>Дії</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Користувач</th>
+          <th>Тип</th>
+          <th>Заголовок</th>
+          <th>Підтвердження</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
       <tbody>
         {contributions.map(item => (
           <tr key={item._id}>
-            <td>{item.user ? `${item.user.username} (${item.user.email})` : 'Користувач видалений'}</td>
+            <td>{item.user ? `${item.user.username} (${item.user.email})` : 'Юзер видалений'}</td>
             <td>{item.type}</td>
             <td>{item.title}</td>
             <td><a href={`http://localhost:5000/${item.filePath}`} target="_blank" rel="noopener noreferrer" className="proof-link">Подивитись</a></td>
@@ -143,14 +151,14 @@ const AdminUserList = () => {
                   className="action-btn approve" 
                   onClick={() => handleRoleChange(user._id, 'admin')}
                 >
-                  Зробити Адміністратором
+                  Зробити Адміном
                 </button>
               ) : (
                 <button 
                   className="action-btn reject" 
                   onClick={() => handleRoleChange(user._id, 'user')}
                 >
-                  Зробити Користувачем
+                  Зробити Юзером
                 </button>
               )}
             </td>
@@ -274,7 +282,7 @@ const CreateFundraiser = () => {
   return (
     <form className="add-help-form" onSubmit={onSubmit}>
       <div className="form-group">
-        <label>Назва Збору (напр. "На дрони")</label>
+        <label>Назва Збору</label>
         <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required />
       </div>
       <div className="form-group">
@@ -300,7 +308,88 @@ const CreateFundraiser = () => {
   );
 };
         
-// --- ОНОВЛЕНИЙ ГОЛОВНИЙ КОМПОНЕНТ ---
+const CreateTask = () => {
+  const [formData, setFormData] = useState({
+    title: '', description: '', category: 'volunteering', points: '100', endDate: ''
+  });
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
+  
+  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onFileChange = (e) => {
+    setFile(e.target.files.length > 0 ? e.target.files[0] : null);
+  };
+  
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData(); 
+    data.append('title', formData.title);
+    data.append('description', formData.description);
+    data.append('category', formData.category);
+    data.append('points', formData.points);
+    data.append('endDate', formData.endDate);
+    if (file) {
+      data.append('taskFile', file);
+    }
+
+    try {
+      const token = JSON.parse(localStorage.getItem('userToken'));
+      
+      const config = { 
+        headers: { 
+          'x-auth-token': token,
+        } 
+      };
+      
+      await axios.post('http://localhost:5000/api/tasks', data, config);
+      setMessage('Завдання успішно створено!');
+      setFormData({ title: '', description: '', category: 'volunteering', points: '100', endDate: '' });
+      setFile(null);
+    } catch (err) {
+      setMessage('Помилка: ' + (err.response?.data?.msg || 'Щось пішло не так'));
+    }
+  };
+
+  return (
+    <form className="add-help-form" onSubmit={onSubmit}>
+      <div className="form-group">
+        <label>Назва Завдання</label>
+        <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required />
+      </div>
+      <div className="form-group">
+        <label>Категорія</label>
+        <select name="category" value={formData.category} onChange={onChange} className="neumorph-select">
+          <option value="volunteering">Волонтерське завдання</option>
+          <option value="aid">Гуманітарна допомога (речі)</option>
+          <option value="other">Інше</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Опис Завдання</label>
+        <textarea name="description" value={formData.description} onChange={onChange} className="neumorph-textarea" required></textarea>
+      </div>
+      <div className="form-group">
+        <label>Бажана дата кінця (опціонально)</label>
+        <input type="date" name="endDate" value={formData.endDate} onChange={onChange} className="neumorph-input" />
+      </div>
+      <div className="form-group">
+        <label>Бали за виконання</label>
+        <input type="number" name="points" value={formData.points} onChange={onChange} className="neumorph-input" required />
+      </div>
+      <div className="form-group">
+        <label>Файл (Інструкція/Фото) (опціонально)</label>
+        <label htmlFor="taskFile" className={`neumorph-file-input ${file ? 'file-selected' : ''}`}>
+          <span>{file ? '✅' : '📁'} </span>
+          {file ? file.name : 'Натисніть, щоб обрати файл'}
+          <input type="file" id="taskFile" onChange={onFileChange} />
+        </label>
+      </div>
+      <button type="submit" className="neumorph-button">Створити Завдання</button>
+      {message && <p style={{ textAlign: 'center', marginTop: '15px' }}>{message}</p>}
+    </form>
+  );
+};
+        
 const AdminDashboardPage = () => {
   const [activeTab, setActiveTab] = useState('contributions');
   const navigate = useNavigate(); 
@@ -356,6 +445,12 @@ const AdminDashboardPage = () => {
           >
             Створити Збір
           </button>
+          <button 
+            className={`tab-btn ${activeTab === 'tasks' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tasks')}
+          >
+            Створити Завдання
+          </button>
         </div>
         
         {activeTab === 'contributions' && <PendingContributions />}
@@ -363,6 +458,7 @@ const AdminDashboardPage = () => {
         {activeTab === 'tickets' && <AdminTicketList />}
         {activeTab === 'feedback' && <AdminFeedbackList />}
         {activeTab === 'fundraisers' && <CreateFundraiser />}
+        {activeTab === 'tasks' && <CreateTask />}
 
       </div>
     </AnimatedPage>

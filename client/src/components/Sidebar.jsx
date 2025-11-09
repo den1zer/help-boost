@@ -12,7 +12,8 @@ import {
   FiLogOut, 
   FiHelpCircle,
   FiBookOpen,
-  FiDollarSign
+  FiDollarSign,
+  FiClipboard
   
 } from 'react-icons/fi';
 
@@ -87,8 +88,14 @@ const Sidebar = () => {
         <NavLink to="/fundraisers" className="sidebar-link">
           <span className="sidebar-icon"><FiDollarSign /></span>
           <span className="sidebar-text">Збори</span>
+        </NavLink>        
+        <NavLink to="/tasks" className="sidebar-link">
+          <span className="sidebar-icon"><FiClipboard /></span>
+          <span className="sidebar-text">Завдання</span>
         </NavLink>
+        
       </div>
+      
 
       <div style={{ flexGrow: 1 }}></div>
       <NavLink to="/instructions" className="sidebar-link">

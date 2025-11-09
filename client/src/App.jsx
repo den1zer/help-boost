@@ -13,6 +13,8 @@ import RewardsPage from './pages/RewardsPage';
 import SupportPage from './pages/SupportPage'; 
 import InstructionsPage from './pages/InstructionsPage';
 import FundraisersPage from './pages/FundraisersPage';
+import TasksPage from './pages/TasksPage';
+import TaskDetailPage from './pages/TaskDetailPage';
 
 
 const ForgotPasswordPage = () => (
@@ -43,6 +45,8 @@ function App() {
         <Route path="/support" element={<AnimatedPage><SupportPage /></AnimatedPage>} />
         <Route path="/instructions" element={<AnimatedPage><InstructionsPage /></AnimatedPage>} />
         <Route path="/fundraisers" element={<AnimatedPage><FundraisersPage /></AnimatedPage>} />
+        <Route path="/tasks" element={<AnimatedPage><TasksPage /></AnimatedPage>} />
+        <Route path="/tasks/:id" element={<AnimatedPage><TaskDetailPage /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
   );

@@ -1,0 +1,68 @@
+.tasks-container {
+  padding: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.tasks-container h2 {
+  color: #333; margin-top: 0; margin-bottom: 30px;
+}
+
+.task-card {
+  padding: 25px;
+  border-radius: 15px;
+  background-color: #e0e0e0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
+              -5px -5px 10px rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 7px 7px 14px rgba(0, 0, 0, 0.1), 
+              -7px -7px 14px rgba(255, 255, 255, 0.8);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.task-header h3 {
+  margin: 0; color: #333;
+}
+.task-points {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.task-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9em;
+  color: #555;
+  margin: 10px 0;
+}
+.task-body {
+  color: #333;
+  line-height: 1.6;
+}
+
+.task-button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), 
+              -4px -4px 8px rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+}
+.task-button:hover {
+  background-color: #0069d9;
+}
