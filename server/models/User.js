@@ -78,8 +78,15 @@ const UserSchema = new mongoose.Schema({
     totalRejections: { type: Number, default: 0 }
   },
   
-  badges: [EarnedBadgeSchema] 
-  
+  badges: [EarnedBadgeSchema],
+
+  selectedBadge: {
+    badgeId: { type: String, default: null },
+    level: { type: Number, default: null },
+    name: { type: String, default: null },
+    icon: { type: String, default: null }
+  }
+
 }, { timestamps: true });
 
 

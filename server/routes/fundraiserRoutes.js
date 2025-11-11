@@ -3,10 +3,13 @@ const router = express.Router();
 const { body } = require('express-validator');
 const { validate } = require('../middleware/validation');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
-const { 
-  createFundraiser, 
-  getAllFundraisers, 
-  simulateDonation 
+const {
+  createFundraiser,
+  getAllFundraisers,
+  simulateDonation,
+  getAllFundraisersAdmin,
+  updateFundraiser,
+  deleteFundraiser
 } = require('../controllers/fundraiserController');
 
 router.post(
@@ -26,7 +29,7 @@ router.post(
 router.get('/', isAuthenticated, getAllFundraisers);
 
 router.post(
-  '/:id/donate', 
+  '/:id/donate',
   [
     isAuthenticated,
     body('amount', 'Сума має бути додатнім числом').isInt({ gt: 0 })
@@ -34,5 +37,9 @@ router.post(
   validate,
   simulateDonation
 );
+
+router.get('/admin/all', [isAuthenticated, isAdmin], getAllFundraisersAdmin);
+router.put('/:id/admin', [isAuthenticated, isAdmin], updateFundraiser);
+router.delete('/:id/admin', [isAuthenticated, isAdmin], deleteFundraiser);
 
 module.exports = router;

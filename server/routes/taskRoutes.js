@@ -4,13 +4,16 @@ const { body } = require('express-validator');
 const { validate } = require('../middleware/validation');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 const uploadMiddleware = require('../middleware/uploadMiddleware'); 
-const { 
-  createTask, 
+const {
+  createTask,
   getOpenTasks,
   getTaskById,
   claimTask,
   abandonTask,
-  getMyTasks
+  getMyTasks,
+  getAllTasksAdmin,
+  updateTask,
+  deleteTask
 } = require('../controllers/taskController');
 
 router.post(
@@ -35,7 +38,7 @@ router.get('/:id', isAuthenticated, getTaskById);
 router.put('/:id/claim', isAuthenticated, claimTask);
 
 router.put(
-  '/:id/abandon', 
+  '/:id/abandon',
   [
     isAuthenticated,
     body('reason', 'Причина є обов\'язковою').not().isEmpty()
@@ -43,5 +46,9 @@ router.put(
   validate,
   abandonTask
 );
+
+router.get('/admin/all', [isAuthenticated, isAdmin], getAllTasksAdmin);
+router.put('/:id/admin', [isAuthenticated, isAdmin], updateTask);
+router.delete('/:id/admin', [isAuthenticated, isAdmin], deleteTask);
 
 module.exports = router;

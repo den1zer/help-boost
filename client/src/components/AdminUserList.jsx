@@ -53,7 +53,7 @@ const AdminUserList = () => {
       <tbody>
         {users.map(user => (
           <tr key={user._id}>
-            <td>{user.username}</td>
+            <td>{user.username}{user.selectedBadge && user.selectedBadge.icon ? ` ${user.selectedBadge.icon}` : ''}</td>
             <td>{user.email}</td>
             <td>
               <select 

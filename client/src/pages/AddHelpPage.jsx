@@ -163,7 +163,9 @@ const AddHelpPage = () => {
                     <div className="form-group">
                       <label>Місце передачі</label>
                       <div className={`map-placeholder ${location ? 'map-active' : ''}`} onClick={() => setIsMapOpen(true)}>
-                       <div className="map-preview">
+                        {location ? (
+                          <>
+                            <div className="map-preview">
                               <MapContainer center={[location.lat, location.lng]} zoom={13} scrollWheelZoom={false} dragging={false} zoomControl={false}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[location.lat, location.lng]}></Marker>
@@ -172,6 +174,12 @@ const AddHelpPage = () => {
                             <div className="map-preview-text">
                               <span className="selected-text">✅ Точку обрано!</span>
                             </div>
+                          </>
+                        ) : (
+                          <div className="map-preview-text">
+                            <span>📍 Натисніть щоб обрати місце</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </>
@@ -186,7 +194,9 @@ const AddHelpPage = () => {
                     <div className="form-group">
                       <label>Місце активності</label>
                       <div className={`map-placeholder ${location ? 'map-active' : ''}`} onClick={() => setIsMapOpen(true)}>
-                       <div className="map-preview">
+                        {location ? (
+                          <>
+                            <div className="map-preview">
                               <MapContainer center={[location.lat, location.lng]} zoom={13} scrollWheelZoom={false} dragging={false} zoomControl={false}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[location.lat, location.lng]}></Marker>
@@ -195,6 +205,12 @@ const AddHelpPage = () => {
                             <div className="map-preview-text">
                               <span className="selected-text">✅ Точку обрано!</span>
                             </div>
+                          </>
+                        ) : (
+                          <div className="map-preview-text">
+                            <span>📍 Натисніть щоб обрати місце</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </>

@@ -1,15 +1,16 @@
 .admin-container {
-  padding: 40px;
+  padding: 70px 30px 30px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse; 
-  background-color: #e0e0e0;
-  border-radius: 15px;
+  background-color: white;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), 
-              -5px -5px 10px rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .admin-table th,
@@ -115,5 +116,23 @@
 }
 
 .admin-rating-stars .star-empty {
-  color: #ccc; 
+  color: #ccc;
+}
+
+.stat-card {
+  background: #e0e6ea;
+  box-shadow: 4px 4px 8px #b8c6d1, -4px -4px 8px #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.stat-card p {
+  margin: 10px 0;
+  font-size: 14px;
 }

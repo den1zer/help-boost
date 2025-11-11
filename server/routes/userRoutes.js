@@ -4,12 +4,14 @@ const { body } = require('express-validator');
 const { validate } = require('../middleware/validation');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 const uploadMiddleware = require('../middleware/uploadMiddleware'); 
-const { 
-  getUserProfile, 
-  getAllUsers, 
-  updateUserRole, 
+const {
+  getUserProfile,
+  getAllUsers,
+  updateUserRole,
   updateUserProfile,
-  getLeaderboard
+  getLeaderboard,
+  updateSelectedBadge,
+  getUserStats
 } = require('../controllers/userController');
 
 router.get('/me', isAuthenticated, getUserProfile);
@@ -30,7 +32,9 @@ router.put(
 );
 
 router.get('/leaderboard', isAuthenticated, getLeaderboard);
+router.put('/selected-badge', isAuthenticated, updateSelectedBadge);
 router.get('/', [isAuthenticated, isAdmin], getAllUsers);
 router.put('/role/:id', [isAuthenticated, isAdmin], updateUserRole);
+router.get('/stats', [isAuthenticated, isAdmin], getUserStats);
 
 module.exports = router;
