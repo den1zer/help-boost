@@ -10,11 +10,16 @@ const PendingContributions = () => {
   const [contributions, setContributions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+  const [filterType, setFilterType] = useState('all');
+
   const fetchPending = async () => {
+    setLoading(true);
     try {
       const token = JSON.parse(localStorage.getItem('userToken'));
-      const config = { headers: { 'x-auth-token': token } };
+      const config = { 
+        headers: { 'x-auth-token': token },
+        params: { type: filterType }
+      };
       const res = await axios.get('http://localhost:5000/api/contributions/pending', config);
       setContributions(res.data);
       setLoading(false);
@@ -24,7 +29,9 @@ const PendingContributions = () => {
     }
   };
   
-  useEffect(() => { fetchPending(); }, []);
+  useEffect(() => { 
+    fetchPending(); 
+  }, [filterType]);
   
   const handleApprove = async (id) => {
     const pointsInput = prompt("Скільки балів нарахувати?", "100");
@@ -41,6 +48,10 @@ const PendingContributions = () => {
   const handleReject = async (id) => {
     const comment = prompt('Вкажіть причину відхилення:');
     if (comment === null) return;
+    if (comment === "") {
+        alert("Причина відхилення є обов'язковою");
+        return;
+    }
     try {
       const token = JSON.parse(localStorage.getItem('userToken'));
       const config = { headers: { 'x-auth-token': token } };
@@ -51,121 +62,102 @@ const PendingContributions = () => {
   
   if (loading) return <p>Завантаження заявок...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (contributions.length === 0) return <p>Нових заявок немає.</p>;
   
   return (
-    <table className="admin-table">
-      <thead>
-        <tr>
-          <th>Користувач</th>
-          <th>Тип</th>
-          <th>Заголовок</th>
-          <th>Підтвердження</th>
-          <th>Дії</th>
-        </tr>
-      </thead>
-      <tbody>
-        {contributions.map(item => (
-          <tr key={item._id}>
-            <td>{item.user ? `${item.user.username} (${item.user.email})` : 'Юзер видалений'}</td>
-            <td>{item.type}</td>
-            <td>{item.title}</td>
-            <td><a href={`http://localhost:5000/${item.filePath}`} target="_blank" rel="noopener noreferrer" className="proof-link">Подивитись</a></td>
-            <td>
-              <button className="action-btn approve" onClick={() => handleApprove(item._id)}>Схвалити</button>
-              <button className="action-btn reject" onClick={() => handleReject(item._id)}>Відхилити</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <div className="admin-filters">
+        <label style={{fontWeight: 600, color: '#555'}}>Фільтр по Типу:</label>
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="filter-select">
+          <option value="all">Всі</option><option value="donation">Донат</option><option value="aid">Гум. Допомога</option><option value="volunteering">Волонтерство</option><option value="other">Інше</option>
+        </select>
+      </div>
+      {contributions.length === 0 && <p>Нових заявок немає.</p>}
+      {contributions.length > 0 && (
+        <table className="admin-table">
+          <thead><tr><th>Користувач</th><th>Тип</th><th>Заголовок</th><th>Підтвердження</th><th>Дії</th></tr></thead>
+          <tbody>
+            {contributions.map(item => (
+              <tr key={item._id}>
+                <td>{item.user ? `${item.user.username} (${item.user.email})` : 'Юзер видалений'}</td>
+                <td>{item.type}</td>
+                <td>{item.title}</td>
+                <td><a href={`http://localhost:5000/${item.filePath}`} target="_blank" rel="noopener noreferrer" className="proof-link">Подивитись</a></td>
+                <td>
+                  <button className="action-btn approve" onClick={() => handleApprove(item._id)}>Схвалити</button>
+                  <button className="action-btn reject" onClick={() => handleReject(item._id)}>Відхилити</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 };
 
 const AdminUserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const fetchUsers = async () => {
-    const token = JSON.parse(localStorage.getItem('userToken'));
-    const config = { headers: { 'x-auth-token': token } };
-    try {
-      const res = await axios.get('http://localhost:5000/api/users', config);
-      setUsers(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
+  const [filterRole, setFilterRole] = useState('all');
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      const token = JSON.parse(localStorage.getItem('userToken'));
+      const config = { headers: { 'x-auth-token': token }, params: { role: filterRole } };
+      try {
+        const res = await axios.get('http://localhost:5000/api/users', config);
+        setUsers(res.data);
+        setLoading(false);
+      } catch (err) { setLoading(false); }
+    };
     fetchUsers();
-  }, []);
+  }, [filterRole]);
 
   const handleRoleChange = async (id, newRole) => {
-    if (!window.confirm(`Впевнені, що хочете змінити роль цьому юзеру на ${newRole}?`)) {
-      return;
-    }
-    const token = JSON.parse(localStorage.getItem('userToken'));
-    const config = { headers: { 'x-auth-token': token } };
+    if (!window.confirm(`Змінити роль на ${newRole}?`)) return;
     try {
+      const token = JSON.parse(localStorage.getItem('userToken'));
+      const config = { headers: { 'x-auth-token': token } };
       await axios.put(`http://localhost:5000/api/users/role/${id}`, { role: newRole }, config);
       setUsers(users.map(user => user._id === id ? { ...user, role: newRole } : user));
       alert('Роль оновлено!');
-    } catch (err) {
-      alert('Помилка оновлення ролі');
-    }
+    } catch (err) { alert('Помилка оновлення ролі'); }
   };
 
   if (loading) return <p>Завантаження користувачів...</p>;
 
   return (
-    <table className="admin-table">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Роль</th>
-          <th>Дії</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map(user => (
-          <tr key={user._id}>
-            <td>{user.username}</td>
-            <td>{user.email}</td>
-            <td>
-              <select 
-                value={user.role} 
-                onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                className="neumorph-select" 
-              >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </td>
-            <td>
-              {user.role === 'user' ? (
-                <button 
-                  className="action-btn approve" 
-                  onClick={() => handleRoleChange(user._id, 'admin')}
-                >
-                  Зробити Адміном
-                </button>
-              ) : (
-                <button 
-                  className="action-btn reject" 
-                  onClick={() => handleRoleChange(user._id, 'user')}
-                >
-                  Зробити Юзером
-                </button>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <div className="admin-filters">
+        <label style={{fontWeight: 600, color: '#555'}}>Фільтр по Ролі:</label>
+        <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="filter-select">
+          <option value="all">Всі</option><option value="user">Юзери</option><option value="admin">Адміни</option>
+        </select>
+      </div>
+      <table className="admin-table">
+        <thead><tr><th>Username</th><th>Email</th><th>Роль</th><th>Дії</th></tr></thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user._id}>
+              <td>{user.username}</td><td>{user.email}</td>
+              <td>
+                <select value={user.role} onChange={(e) => handleRoleChange(user._id, e.target.value)} className="neumorph-select">
+                  <option value="user">User</option><option value="admin">Admin</option>
+                </select>
+              </td>
+              <td>
+                {user.role === 'user' ? (
+                  <button className="action-btn approve" onClick={() => handleRoleChange(user._id, 'admin')}>Зробити Адміном</button>
+                ) : (
+                  <button className="action-btn reject" onClick={() => handleRoleChange(user._id, 'user')}>Зробити Юзером</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 
@@ -181,10 +173,7 @@ const AdminTicketList = () => {
         const res = await axios.get('http://localhost:5000/api/support/tickets', config);
         setTickets(res.data);
         setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
+      } catch (err) { setLoading(false); }
     };
     fetchTickets();
   }, []);
@@ -212,6 +201,7 @@ const AdminTicketList = () => {
 const AdminFeedbackList = () => {
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterRating, setFilterRating] = useState('all');
 
   const StarRating = ({ rating }) => (
     <div className="admin-rating-stars">
@@ -225,43 +215,49 @@ const AdminFeedbackList = () => {
 
   useEffect(() => {
     const fetchFeedback = async () => {
+      setLoading(true);
       try {
         const token = JSON.parse(localStorage.getItem('userToken'));
-        const config = { headers: { 'x-auth-token': token } };
+        const config = { headers: { 'x-auth-token': token }, params: { rating: filterRating } };
         const res = await axios.get('http://localhost:5000/api/support/feedback', config);
         setFeedback(res.data);
         setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
+      } catch (err) { setLoading(false); }
     };
     fetchFeedback();
-  }, []);
+  }, [filterRating]);
 
   if (loading) return <p>Завантаження відгуків...</p>;
-  if (feedback.length === 0) return <p>Нових відгуків немає.</p>;
 
   return (
-    <table className="admin-table">
-      <thead><tr><th>Користувач</th><th>Рейтинг (1-5)</th><th>Коментар</th></tr></thead>
-      <tbody>
-        {feedback.map(item => (
-          <tr key={item._id}>
-            <td>{item.user ? item.user.username : 'Анонім'}</td>
-            <td><StarRating rating={item.rating} /></td>
-            <td>{item.comment || '---'}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <div className="admin-filters">
+        <label style={{fontWeight: 600, color: '#555'}}>Фільтр по Рейтингу:</label>
+        <select value={filterRating} onChange={(e) => setFilterRating(e.target.value)} className="filter-select">
+          <option value="all">Всі</option><option value="5">5★</option><option value="4">4★</option><option value="3">3★</option><option value="2">2★</option><option value="1">1★</option>
+        </select>
+      </div>
+      {feedback.length === 0 && <p>Відгуків за цим фільтром немає.</p>}
+      {feedback.length > 0 && (
+        <table className="admin-table">
+          <thead><tr><th>Користувач</th><th>Рейтинг</th><th>Коментар</th></tr></thead>
+          <tbody>
+            {feedback.map(item => (
+              <tr key={item._id}>
+                <td>{item.user ? item.user.username : 'Анонім'}</td>
+                <td><StarRating rating={item.rating} /></td>
+                <td>{item.comment || '---'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 };
 
 const CreateFundraiser = () => {
-  const [formData, setFormData] = useState({
-    title: '', description: '', goalAmount: '', cardName: '', cardNumber: ''
-  });
+  const [formData, setFormData] = useState({ title: '', description: '', goalAmount: '', cardName: '', cardNumber: '' });
   const [message, setMessage] = useState('');
   
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -274,8 +270,9 @@ const CreateFundraiser = () => {
       await axios.post('http://localhost:5000/api/fundraisers', formData, config);
       setMessage('Збір успішно створено!');
       setFormData({ title: '', description: '', goalAmount: '', cardName: '', cardNumber: '' });
-    } catch (err) {
-      setMessage('Помилка: ' + (err.response?.data?.msg || 'Щось пішло не так'));
+    } catch (err) { 
+      const errorMsg = err.response?.data?.errors ? err.response.data.errors[0].msg : (err.response?.data?.msg || 'Щось пішло не так');
+      setMessage('Помилка: ' + errorMsg);
     }
   };
 
@@ -283,15 +280,15 @@ const CreateFundraiser = () => {
     <form className="add-help-form" onSubmit={onSubmit}>
       <div className="form-group">
         <label>Назва Збору</label>
-        <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required />
+        <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required minLength="5" />
       </div>
       <div className="form-group">
         <label>Ціль (UAH)</label>
-        <input type="number" name="goalAmount" value={formData.goalAmount} onChange={onChange} className="neumorph-input" required />
+        <input type="number" name="goalAmount" value={formData.goalAmount} onChange={onChange} className="neumorph-input" required min="1" />
       </div>
       <div className="form-group">
         <label>Опис</label>
-        <textarea name="description" value={formData.description} onChange={onChange} className="neumorph-textarea" required></textarea>
+        <textarea name="description" value={formData.description} onChange={onChange} className="neumorph-textarea" required minLength="10"></textarea>
       </div>
       <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ccc' }}/>
       <div className="form-group">
@@ -300,7 +297,7 @@ const CreateFundraiser = () => {
       </div>
       <div className="form-group">
         <label>Реквізити (Номер картки)</label>
-        <input type="text" name="cardNumber" value={formData.cardNumber} onChange={onChange} className="neumorph-input" required />
+        <input type="text" name="cardNumber" value={formData.cardNumber} onChange={onChange} className="neumorph-input" required minLength="16" maxLength="16" />
       </div>
       <button type="submit" className="neumorph-button">Створити Збір</button>
       {message && <p style={{ textAlign: 'center', marginTop: '15px' }}>{message}</p>}
@@ -327,26 +324,25 @@ const CreateTask = () => {
     data.append('description', formData.description);
     data.append('category', formData.category);
     data.append('points', formData.points);
-    data.append('endDate', formData.endDate);
+    if(formData.endDate) data.append('endDate', formData.endDate);
     if (file) {
       data.append('taskFile', file);
     }
 
     try {
       const token = JSON.parse(localStorage.getItem('userToken'));
-      
       const config = { 
         headers: { 
           'x-auth-token': token,
         } 
       };
-      
       await axios.post('http://localhost:5000/api/tasks', data, config);
       setMessage('Завдання успішно створено!');
       setFormData({ title: '', description: '', category: 'volunteering', points: '100', endDate: '' });
       setFile(null);
     } catch (err) {
-      setMessage('Помилка: ' + (err.response?.data?.msg || 'Щось пішло не так'));
+      const errorMsg = err.response?.data?.errors ? err.response.data.errors[0].msg : (err.response?.data?.msg || 'Щось пішло не так');
+      setMessage('Помилка: ' + errorMsg);
     }
   };
 
@@ -354,7 +350,7 @@ const CreateTask = () => {
     <form className="add-help-form" onSubmit={onSubmit}>
       <div className="form-group">
         <label>Назва Завдання</label>
-        <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required />
+        <input type="text" name="title" value={formData.title} onChange={onChange} className="neumorph-input" required minLength="5" />
       </div>
       <div className="form-group">
         <label>Категорія</label>
@@ -366,15 +362,15 @@ const CreateTask = () => {
       </div>
       <div className="form-group">
         <label>Опис Завдання</label>
-        <textarea name="description" value={formData.description} onChange={onChange} className="neumorph-textarea" required></textarea>
+        <textarea name="description" value={formData.description} onChange={onChange} className="neumorph-textarea" required minLength="10"></textarea>
       </div>
       <div className="form-group">
         <label>Бажана дата кінця (опціонально)</label>
-        <input type="date" name="endDate" value={formData.endDate} onChange={onChange} className="neumorph-input" />
+        <input type="date" name="endDate" value={formData.endDate} onChange={onChange} className="neumorph-input" min={new Date().toISOString().split('T')[0]} />
       </div>
       <div className="form-group">
         <label>Бали за виконання</label>
-        <input type="number" name="points" value={formData.points} onChange={onChange} className="neumorph-input" required />
+        <input type="number" name="points" value={formData.points} onChange={onChange} className="neumorph-input" required min="1" />
       </div>
       <div className="form-group">
         <label>Файл (Інструкція/Фото) (опціонально)</label>
@@ -398,6 +394,7 @@ const AdminDashboardPage = () => {
     alert('Ви вийшли з адмін-панелі');
     localStorage.removeItem('userToken');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId'); 
     navigate('/login'); 
   };
 

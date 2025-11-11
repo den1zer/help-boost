@@ -30,7 +30,6 @@ router.put(
 );
 
 router.get('/leaderboard', isAuthenticated, getLeaderboard);
-router.put('/me/title', isAuthenticated);
 router.get('/', [isAuthenticated, isAdmin], getAllUsers);
 router.put('/role/:id', [isAuthenticated, isAdmin], updateUserRole);
 

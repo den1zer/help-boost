@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
 import MapPicker from '../components/MapPicker';
@@ -8,11 +9,25 @@ import '../styles/Dashboard.css';
 import '../styles/AddHelpPage.css';
 import axios from 'axios';
 
+const useAlertHook = () => ({ showAlert: (message, type) => { alert(message); } });
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 const AddHelpPage = () => {
+  const { showAlert } = useAlertHook();
+  const query = useQuery(); 
+  const navigate = useNavigate(); 
+
+  const taskId = query.get('taskId');
+  const taskTitle = query.get('taskTitle');
+  const isTaskSubmission = !!taskId; 
+
   const [formData, setFormData] = useState({
-    title: '',
+    title: isTaskSubmission ? `Звіт: ${taskTitle}` : '',
     description: '',
-    type: 'donation', 
+    type: isTaskSubmission ? 'volunteering' : 'donation', 
     amount: '',       
     itemList: '',     
     comment: '',      
@@ -36,14 +51,22 @@ const AddHelpPage = () => {
   };
   
   const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      alert('Будь ласка, завантажте файл підтвердження (PDF або Фото).');
-      return;
+    e.preventDefault(); 
+    
+    if (!formData.title || formData.title.length < 3) {
+      return showAlert('Заголовок має бути мінімум 3 символи.', 'error');
     }
-    if (formData.type === 'aid' && !formData.itemList) {
-      alert('Для гуманітарної допомоги "Перелік" є обов\'язковим.');
-      return;
+    if (formData.type === 'donation' && (!formData.amount || formData.amount <= 0)) {
+      return showAlert('Сума донату має бути більше нуля.', 'error');
+    }
+    if (formData.type === 'aid' && (!formData.itemList || formData.itemList.length < 5)) {
+      return showAlert('Перелік для гум. допомоги обов\'язковий (мін. 5 символів).', 'error');
+    }
+    if ((formData.type === 'volunteering' || formData.type === 'other') && !isTaskSubmission && (!formData.description || formData.description.length < 5)) {
+      return showAlert('Опис обов\'язковий (мін. 5 символів).', 'error');
+    }
+    if (!file) {
+      return showAlert('Будь ласка, прикріпіть файл підтвердження (PDF або Фото).', 'error');
     }
 
     const data = new FormData();
@@ -54,6 +77,7 @@ const AddHelpPage = () => {
     data.append('itemList', formData.itemList);
     data.append('comment', formData.comment);
     data.append('location', JSON.stringify(location)); 
+    if (taskId) data.append('taskId', taskId); 
     data.append('proofFile', file);
     
     try {
@@ -62,15 +86,24 @@ const AddHelpPage = () => {
         headers: { 'Content-Type': 'multipart/form-data', 'x-auth-token': token }
       };
       const res = await axios.post('http://localhost:5000/api/contributions/add', data, config);
-      alert('Успіх! ' + res.data.msg);
+      
+      showAlert(res.data.msg, 'success'); 
       setFormData({ 
         title: '', description: '', type: formData.type, 
         amount: '', itemList: '', comment: '' 
       });
       setFile(null);
       setLocation(null);
+      
+      if (isTaskSubmission) {
+        navigate('/my-contributions'); 
+      }
+      
     } catch (err) {
-      alert('Помилка! ' + (err.response?.data?.msg || 'Сталася помилка.'));
+      const errorMsg = err.response?.data?.errors 
+        ? err.response.data.errors[0].msg 
+        : (err.response?.data?.msg || 'Сталася помилка.');
+      showAlert(errorMsg, 'error');
     }
   };
 
@@ -82,57 +115,55 @@ const AddHelpPage = () => {
           onLocationSelect={handleLocationSelect}
         />
       )}
-
       <div className="dashboard-layout">
         <Sidebar />
         <main className="dashboard-main">
           <DashboardHeader />
           <AnimatedPage>
-            
             <div className="add-help-container">
               <form className="add-help-form" onSubmit={onSubmit}>
-                <h2>Додати інформацію про допомогу</h2>
+                <h2>{isTaskSubmission ? 'Завантажити Звіт' : 'Додати допомогу'}</h2>
 
                 <div className="form-group">
                   <label htmlFor="title">Заголовок</label>
-                  <input type="text" id="title" name="title" className="neumorph-input" value={formData.title} onChange={onChange} required />
+                  <input type="text" id="title" name="title" className="neumorph-input" value={formData.title} onChange={onChange} />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="type">Тип допомоги</label>
-                  <select id="type" name="type" className="neumorph-select" value={formData.type} onChange={onChange}>
-                    <option value="donation">Фінансовий донат</option>
-                    <option value="aid">Гуманітарна допомога (речі)</option>
-                    <option value="volunteering">Волонтерське завдання</option>
-                    <option value="other">Інше</option>
-                  </select>
-                </div>
-
-                {formData.type === 'donation' && (
+                {!isTaskSubmission && (
+                  <div className="form-group">
+                    <label htmlFor="type">Тип допомоги</label>
+                    <select id="type" name="type" className="neumorph-select" value={formData.type} onChange={onChange}>
+                      <option value="donation">Фінансовий донат</option>
+                      <option value="aid">Гуманітарна допомога</option>
+                      <option value="volunteering">Волонтерство</option>
+                      <option value="other">Інше</option>
+                    </select>
+                  </div>
+                )}
+                
+                {formData.type === 'donation' && !isTaskSubmission && (
                   <>
                     <div className="form-group">
                       <label htmlFor="amount">Сума (в грн)</label>
-                      <input type="number" id="amount" name="amount" className="neumorph-input" value={formData.amount} onChange={onChange} placeholder="Напр: 500" />
+                      <input type="number" id="amount" name="amount" className="neumorph-input" value={formData.amount} onChange={onChange} placeholder="500" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="description">Опис</label>
-                      <textarea id="description" name="description" className="neumorph-textarea" value={formData.description} onChange={onChange} placeholder="Опис донату"></textarea>
+                      <textarea id="description" name="description" className="neumorph-textarea" value={formData.description} onChange={onChange} placeholder="Деталі..."></textarea>
                     </div>
                   </>
                 )}
                 
-                {formData.type === 'aid' && (
+                {formData.type === 'aid' && !isTaskSubmission && (
                   <>
                     <div className="form-group">
-                      <label htmlFor="itemList">Перелік (Що саме ви передали?) - (ОБОВ'ЯЗКОВО)</label>
-                      <textarea id="itemList" name="itemList" className="neumorph-textarea" value={formData.itemList} onChange={onChange} placeholder="Напр: 5 турнікетів, 2 коробки ліків..." required />
+                      <label htmlFor="itemList">Перелік (ОБОВ'ЯЗКОВО)</label>
+                      <textarea id="itemList" name="itemList" className="neumorph-textarea" value={formData.itemList} onChange={onChange} placeholder="Що саме передали..." />
                     </div>
                     <div className="form-group">
-                      <label>Місце передачі (опціонально)</label>
+                      <label>Місце передачі</label>
                       <div className={`map-placeholder ${location ? 'map-active' : ''}`} onClick={() => setIsMapOpen(true)}>
-                        {location ? (
-                          <>
-                            <div className="map-preview">
+                       <div className="map-preview">
                               <MapContainer center={[location.lat, location.lng]} zoom={13} scrollWheelZoom={false} dragging={false} zoomControl={false}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[location.lat, location.lng]}></Marker>
@@ -141,25 +172,21 @@ const AddHelpPage = () => {
                             <div className="map-preview-text">
                               <span className="selected-text">✅ Точку обрано!</span>
                             </div>
-                          </>
-                        ) : ( <span>Натисніть, щоб обрати<br/>точку на карті</span> )}
                       </div>
                     </div>
                   </>
                 )}
                 
-                {(formData.type === 'volunteering') && (
+                {(formData.type === 'volunteering' || isTaskSubmission) && (
                   <>
                     <div className="form-group">
                       <label htmlFor="description">Опис</label>
-                      <textarea id="description" name="description" className="neumorph-textarea" value={formData.description} onChange={onChange} placeholder="Опис зробленої роботи"></textarea>
+                      <textarea id="description" name="description" className="neumorph-textarea" value={formData.description} onChange={onChange} placeholder="Що зробили..."></textarea>
                     </div>
                     <div className="form-group">
                       <label>Місце активності</label>
                       <div className={`map-placeholder ${location ? 'map-active' : ''}`} onClick={() => setIsMapOpen(true)}>
-                        {location ? (
-                          <>
-                            <div className="map-preview">
+                       <div className="map-preview">
                               <MapContainer center={[location.lat, location.lng]} zoom={13} scrollWheelZoom={false} dragging={false} zoomControl={false}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[location.lat, location.lng]}></Marker>
@@ -168,14 +195,12 @@ const AddHelpPage = () => {
                             <div className="map-preview-text">
                               <span className="selected-text">✅ Точку обрано!</span>
                             </div>
-                          </>
-                        ) : ( <span>Натисніть, щоб обрати<br/>точку на карті</span> )}
                       </div>
                     </div>
                   </>
                 )}
                 
-                {formData.type === 'other' && (
+                {formData.type === 'other' && !isTaskSubmission && (
                   <div className="form-group">
                     <label htmlFor="description">Опис</label>
                     <textarea id="description" name="description" className="neumorph-textarea" value={formData.description} onChange={onChange}></textarea>
@@ -183,22 +208,22 @@ const AddHelpPage = () => {
                 )}
 
                 <div className="form-group">
-                  <label>Підтвердження (PDF або Фото)</label>
+                  <label>Підтвердження (PDF / Фото)</label>
                   <label htmlFor="proofFile" className={`neumorph-file-input ${file ? 'file-selected' : ''}`}>
-                    <span>📁 </span>
-                  {file ? file.name : 'Натисніть, щоб обрати фото/файли'}
-                  <input type="file" id="proofFile" onChange={onFileChange} />
+                    <span>{file ? '✅' : '📁'} </span>
+                    {file ? file.name : 'Обрати файл'}
+                    <input type="file" id="proofFile" onChange={onFileChange} accept="image/*, application/pdf" />
                   </label>
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="comment">Коментар</label>
-                  <input type="text" id="comment" name="comment" className="neumorph-input" value={formData.comment} onChange={onChange} placeholder="Будь-яка доп. інформація..."/>
+                  <input type="text" id="comment" name="comment" className="neumorph-input" value={formData.comment} onChange={onChange} placeholder="Додаткова інфо..."/>
                 </div>
                 
                 <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ccc' }} />
                 <button type="submit" className="neumorph-button">
-                  Відправити на верифікацію
+                  Відправити
                 </button>
               </form>
             </div>
