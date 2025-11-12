@@ -73,12 +73,103 @@ exports.updateUserRole = async (req, res) => {
 
 exports.getLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await User.find({ role: 'user' }) 
-      .sort({ points: -1 }) 
-      .limit(10) 
-      .select('username avatar points level');
-    
+    const leaderboard = await User.find({ role: 'user' })
+      .sort({ points: -1 })
+      .limit(10)
+      .select('username avatar points level selectedBadge');
+
     res.json(leaderboard);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Помилка на сервері');
+  }
+};
+
+exports.updateSelectedBadge = async (req, res) => {
+  try {
+    const { badgeId, level, name, icon } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: 'Користувача не знайдено' });
+
+    // Validate that the user has earned this badge
+    const hasBadge = user.badges.some(badge =>
+      badge.badgeId === badgeId && badge.level === level
+    );
+
+    if (!hasBadge && badgeId !== null) {
+      return res.status(400).json({ msg: 'Цей бейдж не зароблено' });
+    }
+
+    user.selectedBadge = {
+      badgeId: badgeId || null,
+      level: level || null,
+      name: name || null,
+      icon: icon || null
+    };
+
+    await user.save();
+    res.json({ msg: 'Вибраний бейдж оновлено', selectedBadge: user.selectedBadge });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Помилка на сервері');
+  }
+};
+
+exports.getUserStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalAdmins = await User.countDocuments({ role: 'admin' });
+    const users = await User.find({ role: 'user' }).select('points stats level badges createdAt');
+
+    const totalPoints = users.reduce((sum, user) => sum + user.points, 0);
+    const averagePoints = totalUsers > 0 ? Math.round(totalPoints / totalUsers) : 0;
+
+    const pointsDistribution = {
+      '0-100': users.filter(u => u.points <= 100).length,
+      '101-500': users.filter(u => u.points > 100 && u.points <= 500).length,
+      '501-1000': users.filter(u => u.points > 500 && u.points <= 1000).length,
+      '1001+': users.filter(u => u.points > 1000).length,
+    };
+
+    const topContributors = users
+      .sort((a, b) => b.points - a.points)
+      .slice(0, 5)
+      .map(user => ({
+        username: user.username,
+        points: user.points,
+        level: user.level,
+        badgesCount: user.badges.length
+      }));
+
+    const totalDonations = users.reduce((sum, user) => sum + user.stats.totalDonations, 0);
+    const totalVolunteering = users.reduce((sum, user) => sum + user.stats.totalVolunteering, 0);
+    const totalAid = users.reduce((sum, user) => sum + user.stats.totalAid, 0);
+    const totalGeo = users.reduce((sum, user) => sum + user.stats.totalGeo, 0);
+    const highRollers = users.filter(u => u.stats.highRoller).length;
+    const profileCompletes = users.filter(u => u.stats.profileComplete).length;
+
+    const recentRegistrations = users
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5)
+      .map(user => ({
+        username: user.username,
+        createdAt: user.createdAt
+      }));
+
+    res.json({
+      totalUsers,
+      totalAdmins,
+      averagePoints,
+      pointsDistribution,
+      topContributors,
+      totalDonations,
+      totalVolunteering,
+      totalAid,
+      totalGeo,
+      highRollers,
+      profileCompletes,
+      recentRegistrations
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Помилка на сервері');

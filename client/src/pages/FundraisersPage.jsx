@@ -101,6 +101,9 @@ const FundraisersPage = () => {
                 <div key={item._id} className="fundraiser-card">
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
+                  <p style={{fontSize: '0.85em', color: '#999', marginBottom: '15px'}}>
+                    📅 Збір стартував: {new Date(item.createdAt).toLocaleDateString('uk-UA')}
+                  </p>
                   
                   <div className="progress-stats">
                     <span>Зібрано: <strong className="amount">{item.collectedAmount} грн</strong></span>
@@ -117,7 +120,7 @@ const FundraisersPage = () => {
                     <DummyPaymentForm fundraiser={item} onDonation={fetchFundraisers} />
                   ) : (
                     <p style={{marginTop: '20px', fontWeight: 600, color: '#28a745', textAlign: 'center'}}>
-                      ЗБІР ЗАКРИТО!
+                      ✅ ЗБІР ЗАКРИТО! ({new Date(item.updatedAt).toLocaleDateString('uk-UA')})
                     </p>
                   )}
                 </div>

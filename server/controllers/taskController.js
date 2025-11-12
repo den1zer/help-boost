@@ -91,12 +91,58 @@ exports.abandonTask = async (req, res) => {
 };
 exports.getMyTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({ 
+    const tasks = await Task.find({
       assignedTo: req.user.id,
-      status: 'in_progress' 
+      status: 'in_progress'
     }).sort({ createdAt: -1 });
     res.json(tasks);
   } catch (err) {
+    res.status(500).send('Помилка на сервері');
+  }
+};
+
+exports.getAllTasksAdmin = async (req, res) => {
+  try {
+    const tasks = await Task.find({})
+                             .populate('createdBy', 'username')
+                             .populate('assignedTo', 'username')
+                             .sort({ createdAt: -1 });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).send('Помилка на сервері');
+  }
+};
+
+exports.updateTask = async (req, res) => {
+  try {
+    const { title, description, category, points, status, endDate } = req.body;
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ msg: 'Завдання не знайдено' });
+
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.category = category || task.category;
+    task.points = points !== undefined ? parseInt(points) : task.points;
+    task.status = status || task.status;
+    task.endDate = endDate || task.endDate;
+
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Помилка на сервері');
+  }
+};
+
+exports.deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ msg: 'Завдання не знайдено' });
+
+    await Task.findByIdAndDelete(req.params.id);
+    res.json({ msg: 'Завдання видалено' });
+  } catch (err) {
+    console.error(err.message);
     res.status(500).send('Помилка на сервері');
   }
 };

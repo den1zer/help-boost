@@ -1,4 +1,3 @@
-// server/controllers/skinController.js
 const Skin = require('../models/Skin');
 exports.getAllSkins = async (req, res) => {
   try {

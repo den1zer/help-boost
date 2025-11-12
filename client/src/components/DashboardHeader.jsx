@@ -36,7 +36,8 @@ const DashboardHeader = () => {
 
         setUserData({
           username: res.data.username,
-          points: res.data.points 
+          points: res.data.points,
+          selectedBadge: res.data.selectedBadge
         });
         
         const userPoints = res.data.points;
@@ -86,7 +87,7 @@ const DashboardHeader = () => {
 
   return (
     <header className="dashboard-header">
-      <h1>Вітаємо, {userData.username}!</h1>
+      <h1>Вітаємо, {userData.username}{userData.selectedBadge && userData.selectedBadge.icon ? ` ${userData.selectedBadge.icon} ${userData.selectedBadge.name}` : ''}!</h1>
       
       <div className="header-points">
         <span className="icon">⭐</span>

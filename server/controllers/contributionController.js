@@ -3,9 +3,8 @@ const User = require('../models/User');
 const Badge = require('../models/Badge');
 const Task = require('../models/Task');
 
-// --- "ЧОТКИЙ" ФІКС: "addContribution" (шарить за 'taskId') ---
 exports.addContribution = async (req, res) => {
-  // "Витягуємо" "taskId"
+  
   const { title, description, type, amount, itemList, comment, location, taskId } = req.body;
   const userId = req.user.id; 
 
@@ -21,22 +20,18 @@ exports.addContribution = async (req, res) => {
       itemList: type === 'aid' ? itemList : null, 
       comment: comment,
       location: (type === 'aid' || type === 'volunteering') ? (location ? JSON.parse(location) : null) : null,
-      task: taskId || null, // <-- "ЧОТКИЙ" ФІКС: "Лінкаємо" "таску"
+      task: taskId || null, 
       status: 'pending',
     });
     
     await newContribution.save();
     
-    // "Чотко" "кажемо" "тасці", що "гімно" "виконано" (чекає "апрув")
- // ... (в addContribution)
-    // "Чотко" "кажемо" "тасці", що "гімно" "виконано" (чекає "апрув")
     if (taskId) {
       await Task.findByIdAndUpdate(taskId, {
-        submission: newContribution._id, // "Кидаємо" "лінк" на "пруф"
-        status: 'completed' // <-- "ЧОТКИЙ" ФІКС: "ВБИВАЄМО" "ТАСКУ" З "ПУЛУ"
+        submission: newContribution._id, 
+        status: 'completed' 
       });
     }
-// ...
     
     res.status(201).json({ msg: 'Ваш внесок/звіт успішно додано та відправлено на перевірку!' });
   } catch (err) {
@@ -44,7 +39,6 @@ exports.addContribution = async (req, res) => {
     res.status(500).send('Помилка на сервері');
   }
 };
-// --- КІНЕЦЬ ФІКСУ ---
 
 const checkAndAwardBadges = async (user) => {
   const allBadges = await Badge.find(); 

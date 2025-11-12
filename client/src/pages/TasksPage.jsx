@@ -53,6 +53,17 @@ const TasksPage = () => {
                   <span>
                     <strong>Дедлайн:</strong> {task.endDate ? new Date(task.endDate).toLocaleDateString() : 'Немає'}
                   </span>
+                  <span>
+                    <strong>Статус:</strong> {task.status === 'open' ? '🟢 Відкрите' : task.status === 'in_progress' ? '🟡 В процесі' : '🟢 Завершено'}
+                  </span>
+                  <span style={{fontSize: '0.85em', color: '#777'}}>
+                    📅 Створено: {new Date(task.createdAt).toLocaleDateString('uk-UA')}
+                  </span>
+                  {task.status === 'completed' && task.updatedAt && (
+                    <span style={{fontSize: '0.85em', color: '#28a745'}}>
+                      ✅ Закрито: {new Date(task.updatedAt).toLocaleDateString('uk-UA')}
+                    </span>
+                  )}
                 </div>
                 <p className="task-body">{task.description}</p>
                 {task.filePath && (

@@ -46,7 +46,7 @@ const DashboardPage = () => {
       <main className="dashboard-main">
         <DashboardHeader />
         <AnimatedPage>
-          <div style={{ padding: '40px' }}>
+          <div className="dashboard-content-wrapper">
             {loading ? (
               <div className="stat-card">Завантаження статистики...</div>
             ) : (
@@ -80,13 +80,13 @@ const DashboardPage = () => {
                       {leaderboard.map((user, index) => (
                         <li key={user._id} className="leaderboard-item">
                           <span className="leaderboard-rank">#{index + 1}</span>
-                          <img 
-                            src={user.avatar ? `http://localhost:5000/${user.avatar}` : 'default-avatar-path.png'} 
+                          <img
+                            src={user.avatar ? `http://localhost:5000/${user.avatar}` : 'default-avatar-path.png'}
                             onError={(e) => e.target.src = 'https://icon-library.com/images/default-user-icon/default-user-icon-8.jpg'}
-                            alt="avatar" 
+                            alt="avatar"
                             className="leaderboard-avatar"
                           />
-                          <span className="leaderboard-user">{user.username}</span>
+                          <span className="leaderboard-user">{user.username}{user.selectedBadge && user.selectedBadge.icon ? ` ${user.selectedBadge.icon} ${user.selectedBadge.name}` : ''}</span>
                           <span className="leaderboard-points">{user.points}</span>
                         </li>
                       ))}

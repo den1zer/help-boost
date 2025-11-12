@@ -35,7 +35,8 @@ const TicketForm = () => {
       setMessage(res.data.msg); 
       setFormData({ name: '', email: '', phone: '', question: '' }); 
     } catch (err) {
-      setMessage('Помилка. Спробуйте ще раз.');
+      const errorMsg = err.response?.data?.errors ? err.response.data.errors[0].msg : (err.response?.data?.msg || 'Щось пішло не так');
+      setMessage('Помилка: ' + errorMsg);
     }
   };
 
